@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,8 +7,11 @@ using System.Threading.Tasks;
 
 namespace AspMvcCore.Models.Forms
 {
-    public class RegisterForm
+    public class UpdateContactForm
     {
+        [HiddenInput]
+        [Required]
+        public int Id { get; set; }
         [Required]
         [MinLength(2)]
         [MaxLength(50)]
@@ -16,18 +20,10 @@ namespace AspMvcCore.Models.Forms
         [MinLength(2)]
         [MaxLength(50)]
         public string FirstName { get; set; }
-        [Required]
         [EmailAddress]
         [MaxLength(384)]
         public string Email { get; set; }
-        [Required]
-        [MinLength(8)]
-        [MaxLength(20)]
-        [RegularExpression("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-=]).{8,20}$")]
-        [DataType(DataType.Password)]
-        public string Passwd { get; set; }
-        [Compare(nameof(Passwd))]
-        [DataType(DataType.Password)]
-        public string Confirm { get; set; }
+        [MaxLength(30)]
+        public string Phone { get; set; }
     }
 }

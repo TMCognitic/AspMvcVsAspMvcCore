@@ -10,10 +10,12 @@ namespace AspMvc.Models.Forms
     {
         [Required]
         [EmailAddress]
+        [MaxLength(384)]
         public string Email { get; set; }
         [Required]
         [MinLength(8)]
-        [RegularExpression("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$")]
+        [MaxLength(20)]
+        [RegularExpression("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-=]).{8,20}$")]
         [DataType(DataType.Password)]
         public string Passwd { get; set; }
     }

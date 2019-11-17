@@ -21,13 +21,19 @@ namespace AspMvcCore.Infrastructure
         {
             get
             {
-                return JsonConvert.DeserializeObject<User>(Session.GetString(nameof(User)));
+                
+                return (Session.Keys.Contains(nameof(User))) ? JsonConvert.DeserializeObject<User>(Session.GetString(nameof(User))) : null;
             }
 
             set
             {
                 Session.SetString(nameof(User), JsonConvert.SerializeObject(value));
             }
+        }
+
+        public void Abandon()
+        {
+            Session.Clear();
         }
     }
 }

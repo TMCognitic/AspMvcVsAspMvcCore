@@ -52,6 +52,8 @@ namespace AspMvcCore
             //Active l'accès à l'HttpContext via le service de type IHttpContextAccessor
             services.AddHttpContextAccessor();
             //Ajoute le service de gestion des variables de Session
+            //L'utilisation de Transient au lieu de Singleton est nécessaire 
+            //en raison l'injection du "IHttpContextAccessor" qui est disposé à chaque appel
             services.AddTransient<ISessionManager, SessionManager>();
         }
 
@@ -72,7 +74,7 @@ namespace AspMvcCore
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseSession();
             app.UseEndpoints(endpoints =>

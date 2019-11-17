@@ -16,6 +16,6 @@ namespace ToolBox.Patterns.Locator
             Container = serviceCollection.BuildServiceProvider();
         }
 
-        internal abstract void Configure(IServiceCollection serviceCollection);
+        protected abstract void Configure(IServiceCollection serviceCollection);
     }
 }

@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using AspMvc.Infrastructrure
+
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -24,6 +26,15 @@
                     <li>@Html.ActionLink("Accueil", "Index", "Home")</li>
                     <li>@Html.ActionLink("À propos de", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    @if (SessionManager.User is null)
+                    {
+                        <li>@Html.ActionLink("Register", "Register", "Auth")</li>
+                        <li>@Html.ActionLink("Login", "Login", "Auth")</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Logout", "Logout", "Auth")</li>
+                    }
                 </ul>
             </div>
         </div>

@@ -8,6 +8,6 @@ namespace ToolBox.Connections.Database
     {
         int ExecuteNonQuery(Command command);
         IEnumerable<TResult> ExecuteReader<TResult>(Command command, Func<IDataRecord, TResult> selector);
-        dynamic ExecuteScalar(Command command);
+        object ExecuteScalar(Command command);
     }
 }

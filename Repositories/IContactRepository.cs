@@ -8,8 +8,8 @@ namespace Repositories
     {
         IEnumerable<TEntity> Get(int userId);
         TEntity Get(int userId, int id);
-        TEntity Insert(TEntity entity);
-        bool Update(int UserId, int id, TEntity entity);
-        bool Delete(int UserId, int id);
+        TEntity Insert(int userId, TEntity entity);
+        bool Update(int userId, int id, TEntity entity);
+        bool Delete(int userId, int id);
     }
 }

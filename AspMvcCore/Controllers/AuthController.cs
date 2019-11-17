@@ -11,15 +11,13 @@ using ToolBox.Connections.Database;
 
 namespace AspMvcCore.Controllers
 {
-    public class AuthController : Controller
+    public class AuthController : ControllerBase
     {
         private IAuthRepository<User> _repository;
-        private ISessionManager _sessionManager;
 
-        public AuthController(ISessionManager sessionManager, IAuthRepository<User> repository)
+        public AuthController(ISessionManager sessionManager, IAuthRepository<User> repository) : base(sessionManager)
         {
             _repository = repository;
-            _sessionManager = sessionManager;
         }
 
         public IActionResult Index()
@@ -42,12 +40,19 @@ namespace AspMvcCore.Controllers
 
                 if (!(user is null))
                 {
-                    _sessionManager.User = user;
+                    SessionManager.User = user;
                     return RedirectToAction("Index", "Contact");
                 }
             }
 
             return View(form);
+        }
+
+        [AuthRequired]
+        public IActionResult Logout()
+        {
+            SessionManager.Abandon();
+            return RedirectToAction("Login");
         }
 
         public IActionResult Register()

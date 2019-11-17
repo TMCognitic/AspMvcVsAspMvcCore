@@ -2,31 +2,46 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspMvcCore.Infrastructure;
+using AspMvcCore.Models.Forms;
+using AspMvcCore.Models.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Models.Data;
+using Repositories;
 using ToolBox.Connections.Database;
 
 namespace AspMvcCore.Controllers
 {
-    public class ContactController : Controller
+    [AuthRequired]
+    public class ContactController : ControllerBase
     {
-        private IConnection _connection;
+        private readonly IContactRepository<Contact> _repository;
 
-        public ContactController(IConnection connection)
+        public ContactController(IContactRepository<Contact> repository, ISessionManager sessionManager) : base(sessionManager)
         {
-            _connection = connection;
+            _repository = repository;
         }
 
         // GET: Contact
         public ActionResult Index()
         {
-            return View();
+            return View(_repository.Get(SessionManager.User.Id).Select(c => c.ToDetail())); ;
         }
 
         // GET: Contact/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            DetailContactForm detailContactForm = _repository.Get(SessionManager.User.Id, id)?.ToDetail();
+
+            if (detailContactForm is null)
+            {
+                ViewBag.Error("Le contact n'existe pas");
+                return RedirectToAction("Index");
+            }
+
+            return View(detailContactForm);
         }
 
         // GET: Contact/Create
@@ -38,47 +53,73 @@ namespace AspMvcCore.Controllers
         // POST: Contact/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(AddContactForm form)
         {
             try
             {
-                // TODO: Add insert logic here
+                if(ModelState.IsValid)
+                {
+                    _repository.Insert(SessionManager.User.Id, form.ToContact());
+                    return RedirectToAction(nameof(Index));
+                }
 
-                return RedirectToAction(nameof(Index));
+                return View(form);
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
-            }
+#if DEBUG
+                ViewBag.Error = ex.Message;
+#else
+                ViewBag.Error = "Une erreur est survenue durant l'insertion veuillez contacter l'administrateur du site";
+#endif
+                return View(form);
+            }            
         }
 
         // GET: Contact/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            return View(_repository.Get(SessionManager.User.Id, id).ToUpdate());
         }
 
         // POST: Contact/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, UpdateContactForm form)
         {
             try
             {
-                // TODO: Add update logic here
+                if (ModelState.IsValid)
+                {
+                    _repository.Update(SessionManager.User.Id, id, form.ToContact());
+                    return RedirectToAction(nameof(Index));
+                }
 
-                return RedirectToAction(nameof(Index));
+                return View(form);
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+#if DEBUG
+                ViewBag.Error = ex.Message;
+#else
+                ViewBag.Error = "Une erreur est survenue durant la mise à jour veuillez contacter l'administrateur du site";
+#endif
+                return View(form);
             }
         }
 
         // GET: Contact/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            DetailContactForm detailContactForm = _repository.Get(SessionManager.User.Id, id)?.ToDetail();
+
+            if (detailContactForm is null)
+            {
+                ViewBag.Error("Le contact n'existe pas");
+                return RedirectToAction("Index");
+            }
+
+            return View(detailContactForm);
         }
 
         // POST: Contact/Delete/5
@@ -88,7 +129,7 @@ namespace AspMvcCore.Controllers
         {
             try
             {
-                // TODO: Add delete logic here
+                _repository.Delete(SessionManager.User.Id, id);
 
                 return RedirectToAction(nameof(Index));
             }

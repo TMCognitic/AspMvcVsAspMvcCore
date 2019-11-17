@@ -55,7 +55,7 @@ namespace ToolBox.Connections.Database
             }
         }
 
-        public dynamic ExecuteScalar(Command command)
+        public object ExecuteScalar(Command command)
         {
             using (DbConnection connection = CreateConnection())
             {
