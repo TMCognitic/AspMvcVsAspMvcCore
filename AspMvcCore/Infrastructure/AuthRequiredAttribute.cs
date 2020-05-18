@@ -12,7 +12,7 @@ namespace AspMvcCore.Infrastructure
     }
 
     public class AuthRequiredFilter : IAuthorizationFilter
-    {
+    { 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             ISessionManager sessionManager = (ISessionManager)context.HttpContext.RequestServices.GetService(typeof(ISessionManager));
